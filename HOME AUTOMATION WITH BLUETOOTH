@@ -1,0 +1,29 @@
+#include <SoftwareSerial.h> // Include the SoftwareSerial library for communication with the Bluetooth module
+
+SoftwareSerial Bluetooth(10, 11); // Create a SoftwareSerial object for the Bluetooth module with RX on pin 10 and TX on pin 11
+
+const int relayPin = 8; // Define the digital pin (8) to which the relay module is connected
+
+void setup() {
+  pinMode(relayPin, OUTPUT); // Set the relay pin as an OUTPUT to control the relay
+  digitalWrite(relayPin, LOW); // Turn the relay off initially to ensure the connected device is OFF
+
+  Bluetooth.begin(9600); // Start Bluetooth communication at a baud rate of 9600
+  Serial.begin(9600);    // Start Serial Monitor communication at a baud rate of 9600
+  Serial.println("Bluetooth Home Automation Ready"); // Print a message to the Serial Monitor for confirmation
+}
+
+void loop() {
+  if (Bluetooth.available()) { // Check if data is available to read from the Bluetooth module
+    char command = Bluetooth.read(); // Read the received data (a single character command)
+    Serial.println(command); // Print the received command to the Serial Monitor for debugging purposes
+
+    if (command == '1') { // If the received command is '1' (turn ON the device)
+      digitalWrite(relayPin, HIGH); // Set the relay pin HIGH to turn the device ON
+      Serial.println("Device ON"); // Print a confirmation message to the Serial Monitor
+    } else if (command == '0') { // If the received command is '0' (turn OFF the device)
+      digitalWrite(relayPin, LOW); // Set the relay pin LOW to turn the device OFF
+      Serial.println("Device OFF"); // Print a confirmation message to the Serial Monitor
+    }
+  }
+}
